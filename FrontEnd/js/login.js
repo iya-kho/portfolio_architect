@@ -13,10 +13,9 @@ loginForm.addEventListener('submit', async function (event) {
   const userInfoJson = JSON.stringify(userInfo);
 
   const response = await getLoginResponse(userInfoJson, errorMessageContainer);
-  console.log(response);
 
-  // if (response.token) {
-  //   localStorage.token = response.token;
-  //   window.location.href = '../index.html';
-  // }
+  if (response.token) {
+    localStorage.token = response.token;
+    window.location.href = '../index.html';
+  }
 });

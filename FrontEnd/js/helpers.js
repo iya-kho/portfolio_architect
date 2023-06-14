@@ -281,7 +281,6 @@ export const Helpers = {
 
   deleteWork(workElements, secModal, openModal, closeModal, token, showOk, modal, globalContainer) {
     const workEls = [].concat(workElements);
-    console.log(secModal);
     const textContainer = secModal.querySelector('p');
     const yesBtn = secModal.querySelector('#ok');
     const noBtn = secModal.querySelector('#cancel');
