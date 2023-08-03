@@ -186,30 +186,42 @@ export const Helpers = {
     const filterContainers = Array.from(filtContainer.children);
     const galleryItems = Array.from(galContainer.children);
     const allFilter = filterContainers.find(filter => filter.innerText === 'Tous');
+    const otherFilters = filterContainers.filter(filter => filter.innerText !== 'Tous');
     const target = event.target;
 
     target.classList.toggle('filter-clicked');
 
     if (target === allFilter) {
-      filterContainers.forEach(element => {
+      allFilter.classList.add('filter-clicked');
+      otherFilters.forEach(element => {
         element.classList.remove('filter-clicked');
-        allFilter.classList.add('filter-clicked');
       });
 
       showElement(galleryItems);
-    } else {
-      allFilter.classList.remove('filter-clicked');
-      galleryItems.forEach(item => {
-        const itemFilter = filterContainers.find(
-          filter => filter.innerText === item.dataset.categoryName
-        );
+    }
 
-        if (itemFilter.classList.contains('filter-clicked')) {
-          showElement(item);
-        } else {
-          hideElement(item);
-        }
-      });
+    if (target !== allFilter) {
+      allFilter.classList.remove('filter-clicked');
+
+      const isChosenFilter = filterContainers.find(element =>
+        element.classList.contains('filter-clicked')
+      );
+
+      if (isChosenFilter === undefined) {
+        showElement(galleryItems);
+      } else {
+        galleryItems.forEach(item => {
+          const itemFilter = filterContainers.find(
+            filter => filter.innerText === item.dataset.categoryName
+          );
+
+          if (itemFilter.classList.contains('filter-clicked')) {
+            showElement(item);
+          } else {
+            hideElement(item);
+          }
+        });
+      }
     }
   },
 
