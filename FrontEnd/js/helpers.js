@@ -92,6 +92,11 @@ export const Helpers = {
       const filterItemElement = document.createElement('li');
       filterItemElement.innerText = elements[i];
       filterItemElement.classList.add('filter');
+
+      if (i === 0) {
+        filterItemElement.classList.add('filter-clicked');
+      }
+
       filtContainer.appendChild(filterItemElement);
 
       clickHandler(filterItemElement, function (event) {
@@ -186,41 +191,27 @@ export const Helpers = {
     const filterContainers = Array.from(filtContainer.children);
     const galleryItems = Array.from(galContainer.children);
     const allFilter = filterContainers.find(filter => filter.innerText === 'Tous');
-    const otherFilters = filterContainers.filter(filter => filter.innerText !== 'Tous');
     const target = event.target;
 
-    target.classList.toggle('filter-clicked');
+    const chosenFilterOld = filterContainers.find(element =>
+      element.classList.contains('filter-clicked')
+    );
 
-    if (target === allFilter) {
-      otherFilters.forEach(element => {
-        element.classList.remove('filter-clicked');
-      });
-
-      showElement(galleryItems);
-    }
+    chosenFilterOld.classList.remove('filter-clicked');
+    target.classList.add('filter-clicked');
 
     if (target !== allFilter) {
-      allFilter.classList.remove('filter-clicked');
+      galleryItems.forEach(item => {
+        if (item.dataset.categoryName === target.innerText) {
+          showElement(item);
+        } else {
+          hideElement(item);
+        }
+      });
+    }
 
-      const isChosenFilter = filterContainers.find(element =>
-        element.classList.contains('filter-clicked')
-      );
-
-      if (isChosenFilter === undefined) {
-        showElement(galleryItems);
-      } else {
-        galleryItems.forEach(item => {
-          const itemFilter = filterContainers.find(
-            filter => filter.innerText === item.dataset.categoryName
-          );
-
-          if (itemFilter.classList.contains('filter-clicked')) {
-            showElement(item);
-          } else {
-            hideElement(item);
-          }
-        });
-      }
+    if (target === allFilter) {
+      showElement(galleryItems);
     }
   },
 
