@@ -192,7 +192,6 @@ export const Helpers = {
     target.classList.toggle('filter-clicked');
 
     if (target === allFilter) {
-      allFilter.classList.add('filter-clicked');
       otherFilters.forEach(element => {
         element.classList.remove('filter-clicked');
       });

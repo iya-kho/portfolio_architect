@@ -134,6 +134,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     generateModalGal(work);
   });
 
+  allCategories.forEach(category => {
+    addPicSelect.innerHTML += `<option value="${category.name}">${category.name}</option>`;
+  });
+
   // Add event listeners
 
   clickHandler(editBtnGallery, () => {
@@ -146,9 +150,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     showElement([addPicModal, uploadPic]);
     addPicForm.title.value = '';
     addPicForm.category.value = '';
-    allCategories.forEach(category => {
-      addPicSelect.innerHTML += `<option value="${category.name}">${category.name}</option>`;
-    });
   });
 
   clickHandler(addPicBack, () => {
