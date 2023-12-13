@@ -2,9 +2,9 @@ import { isNotEmpty, fileFormat, fileSize } from './formValidator.js';
 
 export const Configs = {
   links: {
-    worksLink: 'http://localhost:5678/api/works',
-    loginLink: 'http://localhost:5678/api/users/login',
-    categoriesLink: 'http://localhost:5678/api/categories',
+    worksLink: 'https://portfolio-architect-api.onrender.com/api/works',
+    loginLink: 'https://portfolio-architect-api.onrender.com/api/users/login',
+    categoriesLink: 'https://portfolio-architect-api.onrender.com/api/categories',
   },
 
   addPicFormConfigs: {
