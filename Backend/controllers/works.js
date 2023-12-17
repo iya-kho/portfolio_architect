@@ -1,48 +1,62 @@
-const Work = require('../models/Work');
+const fs = require('fs');
 
-exports.getAllWorks = (req, res, next) => {
+const Work = require('../models/Work');
+const Category = require('../models/Category');
+
+exports.findAll = (req, res, next) => {
   Work.find()
     .then(works => res.status(200).json(works))
-    .catch(error => res.statusCode(400).json({ error }));
+    .catch(error => res.status(400).json({ error }));
 };
 
 exports.addWork = (req, res, next) => {
-  const bookObject = JSON.parse(req.body.book);
-  delete bookObject._id;
-  delete bookObject._userId;
+  const host = req.get('host');
+	const title = req.body.title;
+	const categoryName = req.body.category;
+	const userId = req.auth.userId;
+  const imageUrl = `${req.protocol}://${host}/images/${req.file.filename}`;
+  let category;
+  let categoryId;
 
-  if (bookObject.ratings[0].grade === 0) {
-    bookObject.ratings = [];
-    bookObject.averageRating = 0;
-  }
+  Category.findOne({name: categoryName })
+    .then(foundCategory => {
+      category = foundCategory;
+      categoryId = foundCategory._id;
 
-  const book = new Book({
-    ...bookObject,
-    userId: req.auth.userId,
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-  });
+      const work = new Work({
+        title,
+        imageUrl,
+        categoryId,
+        userId,
+        category
+      });
 
-  book
-    .save()
-    .then(() => {
-      res.status(201).json({ message: 'Object created!' });
-    })
-    .catch(error => {
-      res.status(400).json({ error });
-    });
+      work
+        .save()
+        .then(() => {
+          res.status(201).json(work);
+        })
+        .catch(error => {
+          res.status(400).json({ error });
+        });
+        }
+        )
+    .catch(error => console.log({ error }));
+
+  
 };
 
-exports.deleteBook = (req, res, next) => {
-  Book.findOne({ _id: req.params.id })
-    .then(book => {
-      if (book.userId != req.auth.userId) {
+exports.deleteWork = (req, res, next) => {
+  Work.findOne({ _id: req.params.id })
+    .then(work => {
+      if (work.userId != req.auth.userId) {
         res.status(403).json({ message: 'Unauthorized request' });
       } else {
-        const filename = book.imageUrl.split('/images/')[1];
+        const filename = work.imageUrl.split('/images/')[1];
         fs.unlink(`images/${filename}`, () => {
-          Book.deleteOne({ _id: req.params.id })
+          Work.deleteOne({ _id: req.params.id })
             .then(() => {
-              res.status(200).json({ message: 'Object deleted!' });
+              res.status(204).json({ message: 'Object deleted!' });
             })
             .catch(error => res.status(401).json({ error }));
         });

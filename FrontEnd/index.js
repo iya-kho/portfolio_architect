@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const allCategories = await getAllCategories();
   let allCategoriesSimple = {};
   allCategories.forEach(category => {
-    allCategoriesSimple[category.id] = category.name;
+    allCategoriesSimple[category._id] = category.name;
   });
 
   // Generate main gallery and log in
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         allCategories.forEach(category => {
           if (addPicForm.category.value === category.name) {
             workCategory = {
-              id: category.id,
+              id: category._id,
               name: category.name,
             };
           }
@@ -229,18 +229,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         let workInfo = new FormData();
         workInfo.append('image', addPicForm.pic.files[0]);
         workInfo.append('title', addPicForm.title.value);
-        workInfo.append('category', workCategory.id);
+        workInfo.append('category', workCategory.name);
 
         const isAdded = await addWorks(workInfo, token);
 
         openSecond(modalConfirm);
         hideElement(cancelBtn);
 
-        if (isAdded.id) {
-          isAdded.category = {
-            id: isAdded.id,
-            name: allCategoriesSimple[isAdded.categoryId],
-          };
+        if (isAdded._id) {
 
           showOkMes(addPicModal, 'Votre photo a été ajoutée.');
 

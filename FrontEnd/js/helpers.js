@@ -81,7 +81,7 @@ export const Helpers = {
 
     itemElement.dataset.categoryId = item.categoryId;
     itemElement.dataset.categoryName = item.category.name;
-    itemElement.dataset.id = item.id;
+    itemElement.dataset.id = item._id;
 
     container.appendChild(itemElement);
   },
