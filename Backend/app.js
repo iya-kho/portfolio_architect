@@ -1,15 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const app = express();
 const path = require('path');
-require('dotenv').config();
 const helmet = require('helmet');
-const app = express()
-app.use(express.json())
+
+const userRoutes = require('./routes/user.routes');
+const categoriesRoutes = require('./routes/categories.routes');
+const worksRoutes = require('./routes/works.routes');
 
 mongoose
   .connect(process.env.DB_LINK)
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
+
+app.use(express.json())
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,16 +25,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(helmet({
-      crossOriginResourcePolicy: false,
-    }));
-app.use('/images', express.static(path.join(__dirname, 'images')))
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
 
-const userRoutes = require('./routes/user.routes');
-const categoriesRoutes = require('./routes/categories.routes');
-const worksRoutes = require('./routes/works.routes');
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/works', worksRoutes);
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;
