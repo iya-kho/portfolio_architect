@@ -141,10 +141,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Add event listeners
 
   clickHandler(editBtnGallery, () => {
+    console.log('clickhandler editBtnGallery');
     showElement([portfolioModal, overlay]);
   });
 
   clickHandler(addPicBtn, () => {
+    console.log('clickhandler addPicBtn');
     removeErrors(addPicErrorMessage);
     hideElement([portfolioModal, addPicPreview]);
     showElement([addPicModal, uploadPic]);
@@ -177,6 +179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Check and add new picture
 
   clickHandler(addPicValidate, () => {
+    console.log('clickHandler addPicValidate');
     removeErrors(addPicErrorMessage);
 
     let isValid = formValidator.validate(addPicForm, addPicFormConfigs);
@@ -216,6 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (isValid) {
       addPicValidate.style.background = '#1D6154';
       clickHandler(addPicValidate, async () => {
+        console.log('clickHandler addPicValidate');
         let workCategory = {};
         allCategories.forEach(category => {
           if (addPicForm.category.value === category.name) {
