@@ -90,6 +90,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     allCategoriesSimple[category.id] = category.name;
   });
 
+  console.log(works);
+  console.log(allCategories);
+
   // Generate main gallery and log in
   works.forEach(work => generateGallery(work, galleryContainer));
 
