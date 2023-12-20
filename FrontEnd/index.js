@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Check and add new picture
 
-  clickHandler(addPicValidate, () => {
+  clickHandler(addPicValidate, async () => {
     removeErrors(addPicErrorMessage);
 
     let isValid = formValidator.validate(addPicForm, addPicFormConfigs);
@@ -185,6 +185,47 @@ document.addEventListener('DOMContentLoaded', async () => {
       let errors = formValidator.getErrors(addPicForm.name);
 
       addPicErrorMessage.innerText = errors.messageToShow;
+    }
+
+    if (isValid) {
+      let workCategory = {};
+      allCategories.forEach(category => {
+        if (addPicForm.category.value === category.name) {
+          workCategory = {
+            id: category._id,
+            name: category.name,
+          };
+        }
+      });
+
+      let workInfo = new FormData();
+      workInfo.append('image', addPicForm.pic.files[0]);
+      workInfo.append('title', addPicForm.title.value);
+      workInfo.append('category', workCategory.name);
+
+      const isAdded = await addWorks(workInfo, token);
+
+      openSecond(modalConfirm);
+      hideElement(cancelBtn);
+
+      if (isAdded._id) {
+        showOkMes(addPicModal, 'Votre photo a été ajoutée.');
+
+        generateGallery(isAdded, galleryContainer);
+        generateModalGal(isAdded, modalGalleryContainer);
+      } else {
+        showNotOkMessage(modalConfirm, hideSecond);
+      }
+    }
+  });
+
+  addPicForm.addEventListener('input', () => {
+    const isValid = formValidator.validate(addPicForm, addPicFormConfigs);
+
+    if (isValid) {
+      addPicValidate.style.background = '#1D6154';
+    } else {
+      addPicValidate.style.background = '#A7A7A7';
     }
   });
 
@@ -207,51 +248,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         addPicPreview.src = e.target.result;
       };
       reader.readAsDataURL(file);
-    }
-  });
-
-  addPicForm.addEventListener('input', () => {
-    const isValid = formValidator.validate(addPicForm, addPicFormConfigs);
-
-    if (isValid) {
-      addPicValidate.style.background = '#1D6154';
-      clickHandler(addPicValidate, async () => {
-        let workCategory = {};
-        allCategories.forEach(category => {
-          if (addPicForm.category.value === category.name) {
-            workCategory = {
-              id: category.id,
-              name: category.name,
-            };
-          }
-        });
-
-        let workInfo = new FormData();
-        workInfo.append('image', addPicForm.pic.files[0]);
-        workInfo.append('title', addPicForm.title.value);
-        workInfo.append('category', workCategory.id);
-
-        const isAdded = await addWorks(workInfo, token);
-
-        openSecond(modalConfirm);
-        hideElement(cancelBtn);
-
-        if (isAdded.id) {
-          isAdded.category = {
-            id: isAdded.id,
-            name: allCategoriesSimple[isAdded.categoryId],
-          };
-
-          showOkMes(addPicModal, 'Votre photo a été ajoutée.');
-
-          generateGallery(isAdded, galleryContainer);
-          generateModalGal(isAdded, modalGalleryContainer);
-        } else {
-          showNotOkMessage(modalConfirm, hideSecond);
-        }
-      });
-    } else {
-      addPicValidate.style.background = '#A7A7A7';
     }
   });
 });
