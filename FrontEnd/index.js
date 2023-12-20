@@ -141,12 +141,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Add event listeners
 
   clickHandler(editBtnGallery, () => {
-    console.log('clickhandler editBtnGallery');
     showElement([portfolioModal, overlay]);
   });
 
   clickHandler(addPicBtn, () => {
-    console.log('clickhandler addPicBtn');
     removeErrors(addPicErrorMessage);
     hideElement([portfolioModal, addPicPreview]);
     showElement([addPicModal, uploadPic]);
@@ -178,8 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Check and add new picture
 
-  clickHandler(addPicValidate, () => {
-    console.log('clickHandler addPicValidate');
+  clickHandler(addPicValidate, async () => {
     removeErrors(addPicErrorMessage);
 
     let isValid = formValidator.validate(addPicForm, addPicFormConfigs);
@@ -189,38 +186,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       addPicErrorMessage.innerText = errors.messageToShow;
     }
-  });
-
-  addPicForm.pic.addEventListener('change', () => {
-    const file = addPicForm.pic.files[0];
-
-    const isValid = formValidator.validate(addPicForm, { pic: addPicFormConfigs.pic });
-
-    if (!isValid) {
-      let errors = formValidator.getErrors(addPicForm.name);
-
-      addPicErrorMessage.innerText = errors.messageToShow;
-    } else {
-      hideElement(uploadPic);
-      addPicPreview.file = file;
-      showElement(addPicPreview);
-
-      const reader = new FileReader();
-      reader.onload = e => {
-        addPicPreview.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  addPicForm.addEventListener('input', () => {
-    const isValid = formValidator.validate(addPicForm, addPicFormConfigs);
 
     if (isValid) {
-      addPicValidate.style.background = '#1D6154';
-      clickHandler(addPicValidate, async () => {
-        console.log('clickHandler addPicValidate');
-        let workCategory = {};
+      let workCategory = {};
         allCategories.forEach(category => {
           if (addPicForm.category.value === category.name) {
             workCategory = {
@@ -249,9 +217,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
           showNotOkMessage(modalConfirm, hideSecond);
         }
-      });
+    }
+  });
+
+   addPicForm.addEventListener('input', () => {
+    const isValid = formValidator.validate(addPicForm, addPicFormConfigs);
+
+    if (isValid) {
+      addPicValidate.style.background = '#1D6154';
     } else {
       addPicValidate.style.background = '#A7A7A7';
     }
   });
+
+  addPicForm.pic.addEventListener('change', () => {
+    const file = addPicForm.pic.files[0];
+
+    const isValid = formValidator.validate(addPicForm, { pic: addPicFormConfigs.pic });
+
+    if (!isValid) {
+      let errors = formValidator.getErrors(addPicForm.name);
+
+      addPicErrorMessage.innerText = errors.messageToShow;
+    } else {
+      hideElement(uploadPic);
+      addPicPreview.file = file;
+      showElement(addPicPreview);
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        addPicPreview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
 });

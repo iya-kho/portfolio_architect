@@ -147,7 +147,6 @@ export const Helpers = {
     const editBtn = figure.querySelector('.edit-btn');
 
     clickHandler(figure, e => {
-      console.log('clickhandler modal gallery');
       switch (e.target) {
         case this:
           return false;
